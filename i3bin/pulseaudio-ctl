@@ -1,0 +1,216 @@
+#!/bin/bash
+#
+# pulseaudio-ctl
+#
+# simple control of pulseaudio vol+/vol-/mute from the shell
+# or more practically, from DE shortcut keys
+#
+# by graysky
+# https://github.com/graysky2/pulseaudio-ctl
+#
+# Modified for my system --admalledd (gitref=1978ab9b79ababa0932eaba84ccfd9203432e8b0)
+
+VERS="1.52"
+SKEL="/usr/share/pulseaudio-ctl/config.skel"
+CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/pulseaudio-ctl/config"
+
+export BLD="\e[01m" BLU="\e[01;34m" RED="\e[01;31m" NRM="\e[00m" GRN="\e[01;32m"
+command -v sed >/dev/null 2>&1 || {
+echo "I require sed but it's not installed. Aborting." >&2
+exit 1; }
+
+command -v awk >/dev/null 2>&1 || {
+echo "I require awk but it's not installed. Aborting." >&2
+exit 1; }
+
+command -v pactl >/dev/null 2>&1 || {
+echo "I require pactl but it's not installed. Aborting." >&2
+exit 1; }
+
+command -v pacmd >/dev/null 2>&1 || {
+echo "I require pacmd but it's not installed. Aborting." >&2
+exit 1; }
+
+is_integer() {
+  if [[ "$1" =~ ^[0-9]+$ ]]; then
+    echo 1;
+  else
+    echo 0;
+  fi
+}
+
+makeconfig() {
+  if [[ ! -f "$SKEL" ]]; then
+    echo -e "${RED}$SKEL is missing. Reinstall this package to continue."${NRM}
+    exit 1
+  fi
+
+  if [[ ! -f "$CONFIG" ]]; then
+    echo -e ${BLD}'------------------------------------------------------------'${NRM}
+    echo -e ${BLD}' No config file found so creating a fresh one in:'${NRM}
+    echo -e ${BLD}${BLU}" $CONFIG"${NRM}
+    echo
+    echo -e ${BLD}" Edit this file if desired."${NRM}
+    echo -e ${BLD}'------------------------------------------------------------'${NRM}
+    install -Dm644 "$SKEL" "$CONFIG"
+  fi
+}
+
+checkconfig() {
+  if [[ ! -f "$CONFIG" ]]; then
+    makeconfig
+  else
+    source "$CONFIG"
+    if [[ -n "$UPPER_THRESHOLD" ]]; then
+      [[ $(is_integer "$UPPER_THRESHOLD") == '1' ]] || UPPER_THRESHOLD=100
+    else
+      UPPER_THRESHOLD=100
+    fi
+  fi
+
+  if [[ -n "$NOTIFY" ]]; then
+    command -v notify-send >/dev/null 2>&1 || {
+    echo "You wish to use notifications but I require notify-send but it's not installed." >&2
+    echo "Modify $CONFIG or install the package that provides it. Aborting." >&2
+    exit 1; }
+    export "$NOTIFY"
+  fi
+}
+
+setup() {
+  SINK=$(pacmd list-sinks|awk '/\* index:/{ print $3 }')
+  SOURCE=$(pacmd list-sources|awk '/\* index:/{ print $3 }')
+  PAVERSION=$(pulseaudio --version| sed 's/pulseaudio //')
+  # this worked some versions of PA 4 but is no longer valid with v5
+  CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: /{ print $5 }'|sed 's/%//')
+  #CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/%//g')
+  MUTED=$(pacmd list-sinks|grep -A 15 '* index'|awk '/muted:/{ print $2 }')
+  SOURCE_MUTED=$(pacmd list-sources|grep -A 15 '* index'|awk '/muted:/{ print $2 }')
+  SOURCE_VOLUME=$(pacmd list-sources|grep -A 15 '* index'| awk '/volume: /{ print $5 }'|sed 's/%//')
+
+  # check that extracted vars are integers
+  declare -A VARS_TO_CHECK
+  VARS_TO_CHECK=([SINK]="default sink" [SOURCE]="default source" [CURVOL]="current volume")
+  for v in "${!VARS_TO_CHECK[@]}"; do
+    if [[ -n "${!v}" ]]; then
+      [[ $(is_integer "${!v}") == '1' ]] || echo -e "${RED}Cannot determine ${VARS_TO_CHECK[$v]}."${NRM}
+    else
+      return 0
+    fi
+  done
+}
+
+checkconfig
+setup
+# checks if exist a valid $2 
+PERC=5
+[[ -n "$2" ]] && [[ $(is_integer "${2%%%}") == '1' ]] && PERC=${2%%%} 
+
+case "$1" in
+  U|u|[U,u]p)
+    # raise volume by $PERC % or set it to the upper threshold
+    # in cases where external apps have pushed it above
+    [[ "$(( $PERC + $CURVOL ))" -gt "$UPPER_THRESHOLD" ]] && PERC="$(( $UPPER_THRESHOLD - $CURVOL ))"
+    [[ "$CURVOL" -ge $UPPER_THRESHOLD ]] && pactl set-sink-volume "$SINK" $UPPER_THRESHOLD% ||
+      pactl set-sink-volume "$SINK" -- +$PERC%
+    CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/%//g')
+    if [[ -n "$NOTIFY" ]]; then
+      [[ -n "$BARCHART" ]] &&
+      notify-send -t 1000 -i multimedia-volume-control --hint=int:transient:1 --hint=int:value:$CURVOL --hint=string:synchronous:volume "Volume up $PERC %" "" ||
+      notify-send -t 1000 --hint=int:transient:1 "Volume up $PERC%" "Current is $CURVOL %" --icon=multimedia-volume-control
+    fi
+    ;;
+  D|d|[D,d]own|[D,d]o)
+    # lowers volume by $PERC %
+    [[ "$PERC" -gt "$CURVOL" ]] && PERC="$CURVOL"
+    [[ "$CURVOL" -le 0 ]] && exit 0 ||
+      pactl set-sink-volume "$SINK" -- -$PERC%
+    CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/%//g')
+    if [[ -n "$NOTIFY" ]]; then
+      [[ -n "$BARCHART" ]] &&
+      notify-send -t 1000 -i multimedia-volume-control --hint=int:transient:1 --hint=int:value:$CURVOL --hint=string:synchronous:volume "Volume down $PERC %" "" ||
+      notify-send -t 1000 --hint=int:transient:1 "Volume down $PERC%" "Current is $CURVOL %" --icon=multimedia-volume-control
+    fi
+    ;;
+  M|m|[M,m]u|[M,m]ute)
+    # mutes the volume entirely
+    pactl set-sink-mute "$SINK" toggle
+    MUTED=$(pacmd list-sinks|grep -A 15 '* index'|awk '/muted:/{ print $2 }')
+    [[ -n "$NOTIFY" ]] &&
+      notify-send -t 1000 --hint=int:transient:1 "Mute toggle" "Muted: $MUTED" --icon=audio-volume-muted
+    ;;
+  [C,c][M,m])
+    # gets the current mute status
+    MUTED=$(pacmd list-sinks|grep -A 15 '* index'|awk '/muted:/{ print $2 }')
+    echo $MUTED
+    ;;
+  [M,m]i|[M,m]ute-[I,i]nput)
+    # mutes the microphone entirely
+    pactl set-source-mute "$SOURCE" toggle
+    SOURCE_MUTED=$(pacmd list-sources|grep -A 15 '* index'|awk '/muted:/{ print $2 }')
+    [[ -n "$NOTIFY" ]] &&
+      notify-send -t 1000 --hint=int:transient:1 "Mute toggle" "Muted: $SOURCE_MUTED" --icon=audio-volume-muted
+    ;;
+  set)
+    NEWVOL="${2%%%}"
+    [[ "$NEWVOL" -ge $UPPER_THRESHOLD ]] && exit 0 ||
+      [[ "$NEWVOL" -le 0 ]] && exit 0 ||
+      pactl set-sink-volume "$SINK" -- $NEWVOL%
+    CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/%//g')
+    [[ -n "$NOTIFY" ]] &&
+      notify-send -t 1000 --hint=int:transient:1 "Volume set" "Level: $CURVOL" --icon=multimedia-volume-control
+    ;;
+  atmost)
+    NEWVOL="${2%%%}"
+    [[ "$CURVOL" -le "$NEWVOL" ]] && exit 0 ||
+      [[ "$NEWVOL" -ge $UPPER_THRESHOLD ]] && exit 0 ||
+      [[ "$NEWVOL" -le 0 ]] && exit 0 ||
+      pactl set-sink-volume "$SINK" -- $NEWVOL%
+    CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/%//g')
+    [[ -n "$NOTIFY" ]] &&
+      notify-send -t 1000 --hint=int:transient:1 "Atmost set" "Level: $CURVOL" --icon=multimedia-volume-control
+    ;;
+  C|c|[C,c]urrent)
+    # useful only for scripting
+    echo $CURVOL%
+    ;;
+  [C,c][I,i])
+    echo $SOURCE_VOLUME%
+    ;;
+  [C,c][I,i][M,m])
+    echo $SOURCE_MUTED
+    ;;
+  *)
+    # send to notify-send if enabled
+    [[ -n "$NOTIFY" ]] &&
+      notify-send -t 8000 --hint=int:transient:1 "Pulseaudio Settings" "Volume level     : $CURVOL %\nIs sink muted    : $MUTED\nIs source muted  : $SOURCE_MUTED\nDetected sink    : $SINK\nDetected source  : $SOURCE\nPulse version    : $PAVERSION" --icon=multimedia-volume-control
+    # add pretty colors for mute status for CLI only
+    [[ "$MUTED" = "yes" ]] && MUTED="${NRM}${RED}$MUTED${NRM}" ||
+      MUTED="${NRM}${GRN}$MUTED${NRM}"
+    [[ "$SOURCE_MUTED" = "yes" ]] && SOURCE_MUTED="${NRM}${RED}$SOURCE_MUTED${NRM}" ||
+      SOURCE_MUTED="${NRM}${GRN}$SOURCE_MUTED${NRM}"
+
+    echo -e "${BLD}pulseaudio-ctl v$VERS${NRM}"
+    echo
+    echo -e " ${BLD}$0 ${NRM}${BLU}{up,down,mute,mute-input,set,atmost}${NRM} [n]"
+    echo
+    echo -e " ${BLD}Where ${NRM}${BLU}up${NRM}${BLD} and ${NRM}${BLU}down${NRM}${BLD} adjust volume in ±5 % increments${NRM}"
+    echo -e " ${BLD}Where ${NRM}${BLU}up${NRM}${BLD} and ${NRM}${BLU}down${NRM}${BLD} [n] adjust volume in ±n % increments${NRM}"
+    echo -e " ${BLD}Where ${NRM}${BLU}mute${NRM}${BLD} toggles the mute status on/off${NRM}"
+    echo -e " ${BLD}Where ${NRM}${BLU}mute-input${NRM}${BLD} toggles the input status on/off${NRM}"
+    echo -e " ${BLD}Where ${NRM}${BLU}set${NRM}${BLD} set the volume to [n] %${NRM}"
+    echo -e " ${BLD}Where ${NRM}${BLU}atmost${NRM}${BLD} only takes effect if current volume is higher than [n]${NRM}"
+    echo
+    echo -e " ${BLD}Optionally, redefine an upper threshold in ${NRM}${BLU}$CONFIG${NRM}"
+    echo
+    echo -e " ${BLD}Volume level     : ${NRM}${RED}$CURVOL %${NRM}"
+    echo -e " ${BLD}Is sink muted    : $MUTED"
+    echo -e " ${BLD}Is source muted  : $SOURCE_MUTED"
+    echo -e " ${BLD}Detected sink    : ${NRM}${BLU}$SINK${NRM}"
+    echo -e " ${BLD}Detected source  : ${NRM}${BLU}$SOURCE${NRM}"
+    echo -e " ${BLD}Pulse version    : ${NRM}${BLU}$PAVERSION${NRM}"
+    exit 0
+    ;;
+esac
+
+# vim:set ts=8 sts=2 sw=2 et:

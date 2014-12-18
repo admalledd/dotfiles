@@ -1,0 +1,6 @@
+# include your default GTK2 theme config file, then over-ride individual settings here
+# set env var "GTK2_RC_FILES" to point to this file
+
+include "/home/admalledd/.gtkrc-2.0"
+gtk-theme-name="Darklooks"
+
