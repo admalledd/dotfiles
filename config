@@ -39,8 +39,11 @@ for_window [title="___"] floating enable
 
 
 # 0px Border Windows
-for_window [class="chrome"] border none
-for_window [class="Firefox"] border none 25pixel
+#for_window [class="chrome"] border none
+#for_window [class="Firefox"] border none 25pixel
+for_window [class="Firefox"] border none
+for_window [class="Firefox"] hide_edge_borders vertical
+for_window [class="chrome"]  hide_edge_borders vertical
 
 
 
@@ -167,10 +170,10 @@ mode "resize" {
         bindsym semicolon resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
+        bindsym Left resize shrink width 1 px or 1 ppt
+        bindsym Down resize grow height 1 px or 1 ppt
+        bindsym Up resize shrink height 1 px or 1 ppt
+        bindsym Right resize grow width 1 px or 1 ppt
 
         # back to normal: Enter or Escape
         bindsym Return mode "default"
@@ -183,7 +186,8 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
         #for some reason I cannot set which monitor is primary, so hard code display name
-        tray_output eDP-1-0
+        #tray_output eDP-1-0
+        tray_output eDP1
         colors {
                 background #111111
         }
@@ -198,4 +202,12 @@ exec i3-msg rename workspace 3 to "3: subl"
 exec i3-msg rename workspace 4 to "4: steam"
 
 #TODO: make/find a handy script to fetch posts from http://www.reddit.com/r/ImaginaryLandscapes/  (and maybe other specart subs?)
-exec feh --bg-tile /home/admalledd/Pictures/garret-aj-drydock1.jpg
+#exec feh --bg-tile /home/admalledd/Pictures/garret-aj-drydock1.jpg
+#exec nitrogen #doesn't work?
+
+#nm-applet
+#compton --config ~/.config/compton.conf
+#firefox
+#firefox -P work -no-remote
+#start_mpd.sh
+#gmpc
