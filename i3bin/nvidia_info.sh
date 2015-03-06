@@ -35,7 +35,7 @@ split_nv_usage()
 
 if [[ $1 == "GRAM" ]]; then
     #python -c "print('%0.0f'%((${UsedDedicatedGPUMemory}.0/${TotalDedicatedGPUMemory}.0)*100))"
-    primusrun nvidia-smi | python -c "import sys;smi= sys.stdin.read();data_line = smi.split('\n')[8];_,temp,ram,_,_= data_line.split('|');print ram.strip().replace(' ','')"
+    primusrun nvidia-smi | python -c "import sys;smi= sys.stdin.read();data_line = smi.split('\n')[8];_,temp,ram,_,_= data_line.split('|');print ram.strip().replace(' ','').replace('MiB','')"
 
 elif [[ $1 == "GUSAGE" ]]; then
     #split_nv_usage 0
