@@ -35,13 +35,14 @@ split_nv_usage()
 
 if [[ $1 == "GRAM" ]]; then
     #python -c "print('%0.0f'%((${UsedDedicatedGPUMemory}.0/${TotalDedicatedGPUMemory}.0)*100))"
-    primusrun nvidia-smi | python -c "import sys;smi= sys.stdin.read();data_line = smi.split('\n')[8];_,temp,ram,_,_= data_line.split('|');print ram.strip().replace(' ','').replace('MiB','')"
-
+    nvidia-smi | python -c "import sys;smi= sys.stdin.read();data_line = smi.split('\n')[8];_,temp,ram,_,_= data_line.split('|');print ram.strip().replace(' ','').replace('MiB','')"
+    #echo N/A
 elif [[ $1 == "GUSAGE" ]]; then
     #split_nv_usage 0
     echo N/A
 #elif [[ $1 == "GBUS" ]]; then
 #    split_nv_usage 3
 elif [[ $1 == "GTMP" ]]; then
-    primusrun nvidia-smi | python -c "import sys;smi= sys.stdin.read();data_line = smi.split('\n')[8];_,temp,ram,_,_= data_line.split('|');print temp.split()[1]"
+    #echo N/A
+    nvidia-smi | python -c "import sys;smi= sys.stdin.read();data_line = smi.split('\n')[8];_,temp,ram,_,_= data_line.split('|');print temp.split()[1]"
 fi
