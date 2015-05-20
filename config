@@ -54,7 +54,7 @@ for_window [class="chrome"]  hide_edge_borders vertical
 # class border backgr. text indicator
 client.focused #283E4E #285577 #FFFFFF #49BBD2
 client.focused_inactive #314757 #314757 #ffffff #484e50
-client.unfocused #505050 #505050 #8A8A8A #2e9ef4
+client.unfocused #505050 #202020 #CCCCCC #2e9ef4
 client.urgent #2f343a #900000 #ffffff #900000
 
 
