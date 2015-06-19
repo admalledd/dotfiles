@@ -8,9 +8,9 @@ HDMI="HDMI-1-1"
 DISPLAYPORT="HDMI-1-0"
 
 #when using intel GPU to drive displays
-#LAPTOP="eDP1"
-#HDMI="HDMI2"
-#DISPLAYPORT="HDMI1"
+# LAPTOP="eDP1"
+# HDMI="HDMI2"
+# DISPLAYPORT="HDMI1"
 
 
 
