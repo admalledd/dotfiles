@@ -87,7 +87,7 @@ bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec dmenu_run -l 10 -i
-bindsym $mod+Shift+d exec lightwrapp.sh
+bindsym $mod+Shift+d exec $HOME/.i3/i3bin/lightwrapp.sh
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -106,10 +106,10 @@ bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 # move focused window
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+semicolon move right
+#bindsym $mod+Shift+j move left
+#bindsym $mod+Shift+k move down
+#bindsym $mod+Shift+l move up
+#bindsym $mod+Shift+semicolon move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -186,10 +186,10 @@ bindsym $mod+Control+r exec i3-input -F 'rename workspace to "%s"' -P 'New name:
 
 #Program shortcuts
 
-bindsym $mod+Ctrl+s exec --no-startup-id mmstop.sh
-bindsym $mod+Ctrl+space exec --no-startup-id mmtoggle.sh
-bindsym $mod+Ctrl+n exec --no-startup-id mmnext.sh
-bindsym $mod+Ctrl+p exec --no-startup-id mmprev.sh
+bindsym $mod+Ctrl+s exec --no-startup-id $HOME/.i3/i3bin/mmstop.sh
+bindsym $mod+Ctrl+space exec --no-startup-id $HOME/.i3/i3bin/mmtoggle.sh
+bindsym $mod+Ctrl+n exec --no-startup-id $HOME/.i3/i3bin/mmnext.sh
+bindsym $mod+Ctrl+p exec --no-startup-id $HOME/.i3/i3bin/mmprev.sh
 
 
 
@@ -227,7 +227,6 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 set $mode_gaps Gaps: (o) outer, (i) inner, (0) Cur=0, (d) global=0
-#set $mode_gaps <span> </span><span background='#bb7473' foreground='white'> gaps </span> <span foreground='white'>i</span>nner <span foreground='white'>o</span>uter <span foreground='white'>0 d</span>
 set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
 set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
 bindsym $mod+Shift+g mode "$mode_gaps"
@@ -268,6 +267,20 @@ mode "$mode_gaps_outer" {
         bindsym Escape mode "default"
 }
 
+set $mode_power (l)ock (s)uspend (h)ibernate (r)eboot (p)oweroff
+mode "$mode_power" {
+        bindsym l mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit lock
+        #bindsym e mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit logout
+        bindsym s mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit suspend
+        bindsym h mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit hibernate
+        bindsym r mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit reboot
+        bindsym p mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit shutdown
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+bindsym $mod+Control+l mode "$mode_power"
+#bindsym Mod1+Control+l mode "$mode_power"
 
 
 # Start i3bar to display a workspace bar (plus the system information i3status
@@ -280,7 +293,7 @@ bar {
                 background #111111
         }
         #status_command py3status -c /home/admalledd/.i3/i3status.conf
-        status_command /home/admalledd/dev/i3blocks/i3blocks -c /home/admalledd/.i3/i3blocks.conf
+        status_command $HOME/dev/i3blocks/i3blocks -c $HOME/.i3/i3blocks.conf
 }
 
 
@@ -290,7 +303,7 @@ exec i3-msg rename workspace 3 to "3: subl"
 exec i3-msg rename workspace 4 to "4: steam"
 
 #TODO: make/find a handy script to fetch posts from http://www.reddit.com/r/ImaginaryLandscapes/  (and maybe other specart subs?)
-exec_always --no-startup-id feh --bg-tile /home/admalledd/Pictures/Wallpapers/garret-aj-drydock1.jpg
+exec_always --no-startup-id feh --bg-tile $HOME/Pictures/Wallpapers/garret-aj-drydock1.jpg
 #exec nitrogen #doesn't work?
 
 #nm-applet
@@ -305,11 +318,11 @@ exec --no-startup-id xset s off
 exec --no-startup-id nm-applet
 
 #Compton config is bugged, it is causing screen non-redraw issues
-#exec --no-startup-id compton --config /home/admalledd/.config/compton.conf
+#exec --no-startup-id compton --config $HOME/.config/compton.conf
 
 #for screen tearing on nvidia (not primus): make sure driver is 352+, fixes most issues. If not, below is the command to force pipelining.
 #exec --no-startup-id nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }"
 
 
-exec --no-startup-id /home/admalledd/bin/start_mpd.sh
-exec --no-startup-id /home/admalledd/bin/touchpad_toggle.sh off
+exec --no-startup-id $HOME/bin/start_mpd.sh
+exec --no-startup-id $HOME/.i3/i3bin//touchpad_toggle.sh off

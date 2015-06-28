@@ -18,10 +18,15 @@ I also forget exactly what packages I added beyond the base install to get this 
 
 #Packages
 
-Format is that the link text is the path to the executable, and the link is the source/docs on how to use/install
+Format is that the link text is the path to the executable, and the link is the source/docs on how to use/install. Or is name of debian aptitude package name.
 
+* [$HOME/dev/i3gaps](https://github.com/Airblader/i3) make-install this one instead of config-linking
 * [$HOME/dev/lighthouse/lighthouse](https://github.com/emgram769/lighthouse)
 * [$HOME/dev/i3blocks/i3blocks](https://github.com/vivien/i3blocks)
+* `imagemagick`
+* `libmagickcore5-extra`
+* `scrot`
+* `i3lock`
 
 #Helper files
 

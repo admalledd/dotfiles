@@ -1,0 +1,35 @@
+#!/bin/bash
+#  Note: this script requires passwordless access to
+#        poweroff, reboot, pm-suspend and pm-hibernate
+#
+
+
+lock() {
+  $HOME/.i3/i3bin/i3lock.sh
+}
+
+case "$1" in
+  lock)
+    lock
+    ;;
+  logout)
+    i3-msg exit
+    ;;
+  suspend)
+    $HOME/.i3/i3bin/suspend.sh
+    ;;
+  hibernate)
+#    lock && systemctl hibernate
+    ;;
+  reboot)
+#     sudo reboot
+    ;;
+  shutdown)
+#     sudo poweroff
+    ;;
+  *)
+    echo "Usage: $0 [lock|logout|suspend|hibernate|reboot|shutdown]"
+    exit 2
+esac
+
+exit 0

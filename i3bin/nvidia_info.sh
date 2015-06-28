@@ -20,7 +20,7 @@ get_nv_attr()
 
 
 #GPUCoreTemp=$(get_nv_attr GPUCoreTemp)
-#GPUUtilization=$(get_nv_attr GPUUtilization)
+GPUUtilization=$(get_nv_attr GPUUtilization)
 #TotalDedicatedGPUMemory=$(get_nv_attr TotalDedicatedGPUMemory)
 #UsedDedicatedGPUMemory=$(get_nv_attr UsedDedicatedGPUMemory)
 #GPUCurrentClockFreqs=$(get_nv_attr GPUCurrentClockFreqs)
@@ -38,8 +38,8 @@ if [[ $1 == "GRAM" ]]; then
     nvidia-smi | python -c "import sys;smi= sys.stdin.read();data_line = smi.split('\n')[8];_,temp,ram,_,_= data_line.split('|');print ram.strip().replace(' ','').replace('MiB','')"
     #echo N/A
 elif [[ $1 == "GUSAGE" ]]; then
-    #split_nv_usage 0
-    echo N/A
+    split_nv_usage 0
+    #echo N/A
 #elif [[ $1 == "GBUS" ]]; then
 #    split_nv_usage 3
 elif [[ $1 == "GTMP" ]]; then
