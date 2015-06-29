@@ -296,12 +296,6 @@ bar {
         status_command $HOME/dev/i3blocks/i3blocks -c $HOME/.i3/i3blocks.conf
 }
 
-
-exec i3-msg rename workspace 1 to "1: www"
-exec i3-msg rename workspace 2 to "2: terms"
-exec i3-msg rename workspace 3 to "3: subl"
-exec i3-msg rename workspace 4 to "4: steam"
-
 #TODO: make/find a handy script to fetch posts from http://www.reddit.com/r/ImaginaryLandscapes/  (and maybe other specart subs?)
 exec_always --no-startup-id feh --bg-tile $HOME/Pictures/Wallpapers/garret-aj-drydock1.jpg
 #exec nitrogen #doesn't work?
