@@ -16,6 +16,7 @@ case "$1" in
     i3-msg exit
     ;;
   suspend)
+    #lock && $HOME/.i3/i3bin/suspend.sh
     $HOME/.i3/i3bin/suspend.sh
     ;;
   hibernate)

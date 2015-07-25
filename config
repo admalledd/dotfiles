@@ -22,7 +22,7 @@ set $mod Mod4
 # chose a FreeType font, such as:
 
 #for some reason font-size has to be "10" on intel, and "12" on nvidia to get same size?
-font pango:DejaVu Sans Mono 12
+font pango:DejaVu Sans Mono 10
 
 
 #make notifications behave
@@ -186,12 +186,19 @@ bindsym $mod+Control+r exec i3-input -F 'rename workspace to "%s"' -P 'New name:
 
 #Program shortcuts
 
-bindsym $mod+Ctrl+s exec --no-startup-id $HOME/.i3/i3bin/mmstop.sh
-bindsym $mod+Ctrl+space exec --no-startup-id $HOME/.i3/i3bin/mmtoggle.sh
-bindsym $mod+Ctrl+n exec --no-startup-id $HOME/.i3/i3bin/mmnext.sh
-bindsym $mod+Ctrl+p exec --no-startup-id $HOME/.i3/i3bin/mmprev.sh
+bindsym $mod+Ctrl+s exec $HOME/.i3/i3bin/mmstop.sh
+bindsym $mod+Ctrl+space exec $HOME/.i3/i3bin/mmtoggle.sh
+bindsym $mod+Ctrl+n exec $HOME/.i3/i3bin/mmnext.sh
+bindsym $mod+Ctrl+p exec $HOME/.i3/i3bin/mmprev.sh
 
+bindsym XF86AudioPlay exec $HOME/.i3/i3bin/mmtoggle.sh
+bindsym XF86AudioStop exec $HOME/.i3/i3bin/mmstop.sh
+bindsym XF86AudioNext exec $HOME/.i3/i3bin/mmnext.sh
+bindsym XF86AudioPrev exec $HOME/.i3/i3bin/mmprev.sh
 
+bindsym XF86AudioMute exec $HOME/bin/pulseaudio-ctl mute
+bindsym XF86AudioRaiseVolume exec $HOME/bin/pulseaudio-ctl up 1
+bindsym XF86AudioLowerVolume exec $HOME/bin/pulseaudio-ctl down 1
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -320,3 +327,6 @@ exec --no-startup-id nm-applet
 
 exec --no-startup-id $HOME/bin/start_mpd.sh
 exec --no-startup-id $HOME/.i3/i3bin//touchpad_toggle.sh off
+
+#start keyboard macro management daemon (Corsair K70 RGB) see: https://github.com/ccMSC/ckb (I am running testing branch atm)
+exec --no-startup-id /usr/local/bin/ckb --background
