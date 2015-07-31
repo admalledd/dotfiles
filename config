@@ -305,20 +305,21 @@ bar {
 
 #TODO: make/find a handy script to fetch posts from http://www.reddit.com/r/ImaginaryLandscapes/  (and maybe other specart subs?)
 exec_always --no-startup-id feh --bg-tile $HOME/Pictures/Wallpapers/garret-aj-drydock1.jpg
-#exec nitrogen #doesn't work?
 
-#nm-applet
-#compton --config ~/.config/compton.conf
-#firefox
-#firefox -P work -no-remote
-#start_mpd.sh
-#gmpc
-
+#Keep my monitors on unless I turn them off.
 exec --no-startup-id xset -dpms
 exec --no-startup-id xset s off
+#because network stuff is a pain on the cmdline and this works well enough.
 exec --no-startup-id nm-applet
+#notification daemon, nice and style-able too.
+exec --no-startup-id dunst
 
 #Compton config is bugged, it is causing screen non-redraw issues
+#Doesn't help that the only reason I want it is to stop the screen tearing, but sadly
+#Nvidia+IGP means that actually is not possible on my laptop, while on my desktop doing the fix mentioned below works fine.
+# See for doc on known nvidia bug (with no fix planned?): 
+#  https://devtalk.nvidia.com/default/topic/775691/linux/vsync-issue-nvidia-prime-ux32vd-with-gt620-m-/1/
+#  http://us.download.nvidia.com/XFree86/Linux-x86/343.13/README/randr14.html
 #exec --no-startup-id compton --config $HOME/.config/compton.conf
 
 #for screen tearing on nvidia (not primus): make sure driver is 352+, fixes most issues. If not, below is the command to force pipelining.

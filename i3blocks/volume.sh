@@ -45,4 +45,4 @@ elif [[ $1 = "mic" ]]; then
         echo "🎤 $($pulsectl ci)"
     fi
 fi
-sleep .25
+#sleep .25

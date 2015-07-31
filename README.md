@@ -27,6 +27,7 @@ Format is that the link text is the path to the executable, and the link is the 
 * `libmagickcore5-extra`
 * `scrot`
 * `i3lock`
+* `dunst`, link config: `ln -s $HOME/.i3/dunstrc $HOME/.config/dunst/dunstrc`
 
 #Helper files
 
