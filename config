@@ -325,6 +325,9 @@ exec --no-startup-id dunst
 #for screen tearing on nvidia (not primus): make sure driver is 352+, fixes most issues. If not, below is the command to force pipelining.
 #exec --no-startup-id nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }"
 
+#Desktop screen tearing nvidia fix (also demo multi-monitor command, maybe make this a script helper, pull info from xrandr?)
+#exec --no-startup-id nvidia-settings --assign CurrentMetaMode="DVI-I-1: nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }, DVI-D-0: nvidia-auto-select +1920+0 { ForceFullCompositionPipeline = On }"
+
 
 exec --no-startup-id $HOME/bin/start_mpd.sh
 exec --no-startup-id $HOME/.i3/i3bin//touchpad_toggle.sh off
