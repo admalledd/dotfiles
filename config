@@ -330,4 +330,4 @@ exec --no-startup-id $HOME/bin/start_mpd.sh
 exec --no-startup-id $HOME/.i3/i3bin//touchpad_toggle.sh off
 
 #start keyboard macro management daemon (Corsair K70 RGB) see: https://github.com/ccMSC/ckb (I am running testing branch atm)
-exec --no-startup-id /usr/local/bin/ckb --background
+#exec --no-startup-id /usr/local/bin/ckb --background

@@ -29,9 +29,11 @@ elif [ "$1" = "ID" ]; then
     xrandr --output $LAPTOP --auto --output $DISPLAYPORT --auto --right-of $LAPTOP --output $HDMI --off
 elif [ "$1" = "IHD" ]; then
     echo "Internal, HDMI, DisplayPort"
+    xrandr --output $LAPTOP --auto --output $HDMI --auto --right-of $LAPTOP --output $DISPLAYPORT --off
+    sleep 1
     xrandr --output $LAPTOP --auto --output $HDMI --auto --right-of $LAPTOP --output $DISPLAYPORT --auto --right-of $HDMI
 elif [ "$1" = "IDH" ]; then
-    echo "Internal, HDMI, DisplayPort"
+    echo "Internal, DisplayPort, HDMI"
     xrandr --output $LAPTOP --auto --output $DISPLAYPORT --auto --right-of $LAPTOP --output $HDMI --auto --right-of $DISPLAYPORT
 
 fi
