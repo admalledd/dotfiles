@@ -38,6 +38,7 @@ Persistent config(s):
 Server:
 -------
 
+* `sudo ip link set tun0 up`
 * `sudo ip addr add ${SERVER_ADDR}/32 peer ${LAPTOP_ADDR} dev tun0`
 * `sudo iptables -t nat -A POSTROUTING -s 10.0.0.0/8 -o eth0 -j MASQUERADE`
 * `sudo iptables -t filter -A FORWARD -i eth0 -o tun0 -m state --state RELATED,ESTABLISHED -j ACCEPT`
@@ -53,6 +54,8 @@ Server-SSHDconfig:
 Laptop:
 -------
 
+* `sudo ip link set tun0 up`
+* `sudo ip addr add ${LAPTOP_ADDR}/32 peer ${SERVER_ADDR} dev tun0`
 * `sudo sysctl net.ipv4.ip_forward=1`
 * `sudo iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o tun0 -j MASQUERADE`
 * `sudo iptables -t filter -A FORWARD -s 10.0.0.0/24 -i eth0 -j ACCEPT`
@@ -97,6 +100,7 @@ Laptop:
     inet 10.10.10.1 peer 10.10.10.2/32 scope global tun0
        valid_lft forever preferred_lft forever
 
+----
 
     Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
     0.0.0.0         10.0.0.1        0.0.0.0         UG    0      0        0 eth0
