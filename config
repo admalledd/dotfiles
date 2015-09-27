@@ -22,7 +22,7 @@ set $mod Mod4
 # chose a FreeType font, such as:
 
 #for some reason font-size has to be "10" on intel, and "12" on nvidia to get same size?
-font pango:DejaVu Sans Mono 10
+font pango:DejaVu Sans Mono 8
 
 
 #make notifications behave
