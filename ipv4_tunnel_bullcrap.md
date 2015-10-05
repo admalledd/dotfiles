@@ -59,6 +59,7 @@ Laptop:
 * `sudo sysctl net.ipv4.ip_forward=1`
 * `sudo iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o tun0 -j MASQUERADE`
 * `sudo iptables -t filter -A FORWARD -s 10.0.0.0/24 -i eth0 -j ACCEPT`
+* `sudo ip route replace default via 10.10.10.2`
 
 Laptop-sshconfig:
 ----
