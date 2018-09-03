@@ -22,8 +22,8 @@ set $mod Mod4
 # chose a FreeType font, such as:
 
 #for some reason font-size has to be "10" on intel, and "12" on nvidia to get same size?
-font pango:DejaVu Sans Mono 8
-
+###font pango:DejaVu Sans Mono 8
+font pango:monospace 10
 
 #make notifications behave
 for_window [class="Xfce4-notifyd"] floating enable
@@ -52,7 +52,7 @@ for_window [class="^.*"] border pixel 1
 
 
 # 0px Border Windows
-#for_window [class="chrome"] border none
+for_window [class="chrome"] border none
 for_window [class="Firefox"] border none
 #for_window [class="Firefox"] border normal
 #for_window [class="Firefox"] hide_edge_borders vertical
@@ -87,7 +87,7 @@ bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec dmenu_run -l 10 -i
-bindsym $mod+Shift+d exec $HOME/.i3/i3bin/lightwrapp.sh
+###bindsym $mod+Shift+d exec $HOME/.i3/i3bin/lightwrapp.sh
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -186,19 +186,19 @@ bindsym $mod+Control+r exec i3-input -F 'rename workspace to "%s"' -P 'New name:
 
 #Program shortcuts
 
-bindsym $mod+Ctrl+s exec $HOME/.i3/i3bin/mmstop.sh
-bindsym $mod+Ctrl+space exec $HOME/.i3/i3bin/mmtoggle.sh
-bindsym $mod+Ctrl+n exec $HOME/.i3/i3bin/mmnext.sh
-bindsym $mod+Ctrl+p exec $HOME/.i3/i3bin/mmprev.sh
+###bindsym XF86AudioPlay exec $HOME/src/adm-dotfiles/i3bin/mmtoggle.sh
+###bindsym XF86AudioStop exec $HOME/src/adm-dotfiles/i3bin/mmstop.sh
+###bindsym XF86AudioNext exec $HOME/src/adm-dotfiles/i3bin/mmnext.sh
+###bindsym XF86AudioPrev exec $HOME/src/adm-dotfiles/i3bin/mmprev.sh
 
-bindsym XF86AudioPlay exec $HOME/.i3/i3bin/mmtoggle.sh
-bindsym XF86AudioStop exec $HOME/.i3/i3bin/mmstop.sh
-bindsym XF86AudioNext exec $HOME/.i3/i3bin/mmnext.sh
-bindsym XF86AudioPrev exec $HOME/.i3/i3bin/mmprev.sh
+bindsym XF86AudioMute exec $HOME/src/adm-dotfiles/i3bin/pulseaudio-ctl mute
+bindsym XF86AudioRaiseVolume exec $HOME/src/adm-dotfiles/i3bin/pulseaudio-ctl up 1
+bindsym XF86AudioLowerVolume exec $HOME/src/adm-dotfiles/i3bin/pulseaudio-ctl down 1
 
-bindsym XF86AudioMute exec $HOME/bin/pulseaudio-ctl mute
-bindsym XF86AudioRaiseVolume exec $HOME/bin/pulseaudio-ctl up 1
-bindsym XF86AudioLowerVolume exec $HOME/bin/pulseaudio-ctl down 1
+
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
+
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -276,12 +276,12 @@ mode "$mode_gaps_outer" {
 
 set $mode_power (l)ock (s)uspend (h)ibernate (r)eboot (p)oweroff
 mode "$mode_power" {
-        bindsym l mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit lock
-        #bindsym e mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit logout
-        bindsym s mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit suspend
-        bindsym h mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit hibernate
-        bindsym r mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit reboot
-        bindsym p mode "default", exec --no-startup-id $HOME/.i3/i3bin/i3exit shutdown
+        bindsym l mode "default", exec --no-startup-id $HOME/src/adm-dotfiles/i3bin/i3exit lock
+        #bindsym e mode "default", exec --no-startup-id $HOME/src/adm-dotfiles/i3bin/i3exit logout
+        bindsym s mode "default", exec --no-startup-id $HOME/src/adm-dotfiles/i3bin/i3exit suspend
+        bindsym h mode "default", exec --no-startup-id $HOME/src/adm-dotfiles/i3bin/i3exit hibernate
+        bindsym r mode "default", exec --no-startup-id $HOME/src/adm-dotfiles/i3bin/i3exit reboot
+        bindsym p mode "default", exec --no-startup-id $HOME/src/adm-dotfiles/i3bin/i3exit shutdown
 
         bindsym Return mode "default"
         bindsym Escape mode "default"
@@ -294,17 +294,17 @@ bindsym $mod+Control+l mode "$mode_power"
 # finds out, if available)
 bar {
         #for some reason I cannot set which monitor is primary, so hard code display name
-        tray_output eDP-1-0
+        tray_output DP-0
         #tray_output eDP1
         colors {
                 background #111111
         }
         #status_command py3status -c /home/admalledd/.i3/i3status.conf
-        status_command $HOME/dev/i3blocks/i3blocks -c $HOME/.i3/i3blocks.conf
+        status_command i3blocks -c $HOME/src/adm-dotfiles/i3blocks.conf
 }
 
 #TODO: make/find a handy script to fetch posts from http://www.reddit.com/r/ImaginaryLandscapes/  (and maybe other specart subs?)
-exec_always --no-startup-id feh --bg-tile $HOME/Pictures/Wallpapers/garret-aj-drydock1.jpg
+###exec_always --no-startup-id feh --bg-tile $HOME/Pictures/Wallpapers/garret-aj-drydock1.jpg
 
 #Keep my monitors on unless I turn them off.
 exec --no-startup-id xset -dpms
@@ -329,8 +329,8 @@ exec --no-startup-id dunst
 #exec --no-startup-id nvidia-settings --assign CurrentMetaMode="DVI-I-1: nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }, DVI-D-0: nvidia-auto-select +1920+0 { ForceFullCompositionPipeline = On }"
 
 
-exec --no-startup-id $HOME/bin/start_mpd.sh
-exec --no-startup-id $HOME/.i3/i3bin//touchpad_toggle.sh off
+#exec --no-startup-id $HOME/bin/start_mpd.sh
+exec --no-startup-id $HOME/bin/touchpad_toggle.sh off
 
 #start keyboard macro management daemon (Corsair K70 RGB) see: https://github.com/ccMSC/ckb (I am running testing branch atm)
 #exec --no-startup-id /usr/local/bin/ckb --background

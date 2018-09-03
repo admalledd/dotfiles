@@ -83,7 +83,7 @@
 : ${BL_NOTIFY:=false}
 
 # Use xrandr or use sysfs?
-: ${BL_METHOD:=sysfs}
+: ${BL_METHOD:=xrandr}
 
 # Config file. You can use this to specify a commmon config file instead of
 # any users ~/.bltool, for example to use from a display manager before login.
@@ -97,7 +97,7 @@ BL_SYSFS_DIR=intel_backlight
 # a way to manually specify in case the autodetection doesn't do what you
 # want. Normally you put this on the command line or in the config file
 # not hard-coded here.
-#BL_XRANDR_OUT=LVDS-0
+BL_XRANDR_OUT=DP-0
 
 # What type of user interface do you want?
 # zenity, dialog, none

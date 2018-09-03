@@ -3,7 +3,7 @@
 #GTK2_RC_FILES=/home/admalledd/.i3/gtk2_darktheme_override.gtkrc-2.0 GTK_THEME=Darklooks
 # yad --text="Volume" --scale --value 25 --button gtk-ok:0 --geometry=32x220+55+500 --class "YADWIN" --vertical --text-align center
 
-pulsectl=/home/admalledd/bin/pulseaudio-ctl
+pulsectl=/home/admalledd/src/adm-dotfiles/i3bin/pulseaudio-ctl
 
 if [[ $1 = "head" ]]; then
 

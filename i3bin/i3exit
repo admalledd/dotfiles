@@ -5,7 +5,7 @@
 
 
 lock() {
-  $HOME/.i3/i3bin/i3lock.sh
+  $HOME/src/adm-dotfiles/i3bin/i3lock.sh
 }
 
 case "$1" in
@@ -17,7 +17,7 @@ case "$1" in
     ;;
   suspend)
     #lock && $HOME/.i3/i3bin/suspend.sh
-    $HOME/.i3/i3bin/suspend.sh
+    $HOME/src/adm-dotfiles/i3bin/suspend.sh
     ;;
   hibernate)
 #    lock && systemctl hibernate

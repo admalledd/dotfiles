@@ -82,11 +82,11 @@ setup() {
   SOURCE=$(pacmd list-sources|awk '/\* index:/{ print $3 }')
   PAVERSION=$(pulseaudio --version| sed 's/pulseaudio //')
   # this worked some versions of PA 4 but is no longer valid with v5
-  CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: /{ print $5 }'|sed 's/%//')
-  #CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/%//g')
+  #CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: /{ print $5 }'|sed 's/%//')
+  CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/%//g')
   MUTED=$(pacmd list-sinks|grep -A 15 '* index'|awk '/muted:/{ print $2 }')
   SOURCE_MUTED=$(pacmd list-sources|grep -A 15 '* index'|awk '/muted:/{ print $2 }')
-  SOURCE_VOLUME=$(pacmd list-sources|grep -A 15 '* index'| awk '/volume: /{ print $5 }'|sed 's/%//')
+  SOURCE_VOLUME=$(pacmd list-sources|grep -A 15 '* index'| awk '/\tvolume: /{ print $5 }'|sed 's/%//')
 
   # check that extracted vars are integers
   declare -A VARS_TO_CHECK
@@ -112,7 +112,7 @@ case "$1" in
     # in cases where external apps have pushed it above
     [[ "$(( $PERC + $CURVOL ))" -gt "$UPPER_THRESHOLD" ]] && PERC="$(( $UPPER_THRESHOLD - $CURVOL ))"
     [[ "$CURVOL" -ge $UPPER_THRESHOLD ]] && pactl set-sink-volume "$SINK" $UPPER_THRESHOLD% ||
-      pactl set-sink-volume "$SINK" -- +$PERC%
+      pactl set-sink-volume "$SINK" +$PERC%
     CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/%//g')
     if [[ -n "$NOTIFY" ]]; then
       [[ -n "$BARCHART" ]] &&
@@ -124,7 +124,7 @@ case "$1" in
     # lowers volume by $PERC %
     [[ "$PERC" -gt "$CURVOL" ]] && PERC="$CURVOL"
     [[ "$CURVOL" -le 0 ]] && exit 0 ||
-      pactl set-sink-volume "$SINK" -- -$PERC%
+      pactl set-sink-volume "$SINK" -$PERC%
     CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/%//g')
     if [[ -n "$NOTIFY" ]]; then
       [[ -n "$BARCHART" ]] &&
@@ -155,7 +155,7 @@ case "$1" in
     NEWVOL="${2%%%}"
     [[ "$NEWVOL" -ge $UPPER_THRESHOLD ]] && exit 0 ||
       [[ "$NEWVOL" -le 0 ]] && exit 0 ||
-      pactl set-sink-volume "$SINK" -- $NEWVOL%
+      pactl set-sink-volume "$SINK" $NEWVOL%
     CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/%//g')
     [[ -n "$NOTIFY" ]] &&
       notify-send -t 1000 --hint=int:transient:1 "Volume set" "Level: $CURVOL" --icon=multimedia-volume-control
@@ -165,7 +165,7 @@ case "$1" in
     [[ "$CURVOL" -le "$NEWVOL" ]] && exit 0 ||
       [[ "$NEWVOL" -ge $UPPER_THRESHOLD ]] && exit 0 ||
       [[ "$NEWVOL" -le 0 ]] && exit 0 ||
-      pactl set-sink-volume "$SINK" -- $NEWVOL%
+      pactl set-sink-volume "$SINK" $NEWVOL%
     CURVOL=$(pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/%//g')
     [[ -n "$NOTIFY" ]] &&
       notify-send -t 1000 --hint=int:transient:1 "Atmost set" "Level: $CURVOL" --icon=multimedia-volume-control
